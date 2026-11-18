@@ -1,0 +1,752 @@
+/* ============================================================
+   ZeriseTaxo — Admin Dashboard & Documentation Views Styles
+   ============================================================ */
+
+/* --- Status Dashboard Styles --- */
+/* ============================================================
+   ML Dashboard — Professional scoped styles
+   ============================================================ */
+.zerisetaxo-db-wrap {
+    max-width: 100%;
+    margin: 0;
+    padding-bottom: 30px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ---------- Hero header bar ---------- */
+.zerisetaxo-db-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #312E81 100%);
+    border-radius: 12px;
+    padding: 22px 26px;
+    margin-bottom: 22px;
+    color: #fff;
+    box-shadow: 0 4px 18px -2px rgba(15, 23, 42, 0.25);
+}
+.zerisetaxo-db-hero-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.zerisetaxo-db-hero-icon {
+    width: 44px;
+    height: 44px;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #A5B4FC;
+    flex-shrink: 0;
+}
+.zerisetaxo-db-hero-title {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+}
+.zerisetaxo-db-hero-sub {
+    margin: 3px 0 0;
+    font-size: 12.5px;
+    color: #E0E7FF;
+    opacity: 0.9;
+}
+.zerisetaxo-db-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.zerisetaxo-db-hero-badge.ok   { background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(110, 231, 183, 0.28); color: #6EE7B7; }
+.zerisetaxo-db-hero-badge.warn { background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(253, 230, 138, 0.28); color: #FDE68A; }
+.zerisetaxo-db-hero-badge.err  { background: rgba(239, 68, 68, 0.18); border: 1px solid rgba(252, 165, 165, 0.28); color: #FECACA; }
+.zerisetaxo-db-hero-badge.idle { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.75); }
+.zerisetaxo-db-hero-badge .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.zerisetaxo-db-hero-badge.ok .dot   { background: #10B981; box-shadow: 0 0 6px #10B981; }
+.zerisetaxo-db-hero-badge.warn .dot { background: #F59E0B; box-shadow: 0 0 6px #F59E0B; }
+.zerisetaxo-db-hero-badge.err .dot  { background: #EF4444; box-shadow: 0 0 6px #EF4444; }
+.zerisetaxo-db-hero-badge.idle .dot { background: rgba(255,255,255,0.5); }
+
+/* ---------- Stat strip ---------- */
+.zerisetaxo-db-statstrip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+}
+.zerisetaxo-db-stat {
+    background: #fff;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    transition: all 0.15s ease;
+}
+.zerisetaxo-db-stat-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+}
+.zerisetaxo-db-stat-icon.blue   { background: #EFF6FF; color: #2563EB; }
+.zerisetaxo-db-stat-icon.green  { background: #DCFCE7; color: #16A34A; }
+.zerisetaxo-db-stat-icon.amber  { background: #FFFBEB; color: #D97706; }
+.zerisetaxo-db-stat-icon.purple { background: #F5F3FF; color: #7C3AED; }
+.zerisetaxo-db-stat-body {}
+.zerisetaxo-db-stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0F172A;
+    line-height: 1;
+    display: block;
+}
+.zerisetaxo-db-stat-label {
+    font-size: 11.5px;
+    color: #64748B;
+    margin-top: 3px;
+    display: block;
+    font-weight: 500;
+}
+
+/* ---------- Card grid ---------- */
+.zerisetaxo-db-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+    margin-bottom: 22px;
+}
+.zerisetaxo-db-card {
+    background: #fff;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 20px 22px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.zerisetaxo-db-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+.zerisetaxo-db-card-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #1E293B;
+}
+.zerisetaxo-db-card-title .dashicons {
+    font-size: 17px;
+    width: 17px;
+    height: 17px;
+    color: #64748B;
+}
+.zerisetaxo-db-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: 12px;
+    font-size: 11.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.zerisetaxo-db-pill.ok     { background: #EEF2FF; color: #4338CA; border: 1px solid #C7D2FE; }
+.zerisetaxo-db-pill.warn   { background: #F1F5F9; color: #334155; border: 1px solid #E2E8F0; }
+.zerisetaxo-db-pill.err    { background: #FEF2F2; color: #991B1B; border: 1px solid #FCA5A5; }
+.zerisetaxo-db-pill.idle   { background: #F1F5F9; color: #475569; border: 1px solid #CBD5E1; }
+.zerisetaxo-db-pill.info   { background: #EEF2FF; color: #4338CA; border: 1px solid #C7D2FE; }
+
+/* Endpoint box */
+.zerisetaxo-db-endpoint {
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: 11.5px;
+    color: #334155;
+    word-break: break-all;
+    line-height: 1.5;
+}
+
+/* Meta rows inside cards */
+.zerisetaxo-db-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+.zerisetaxo-db-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12.5px;
+    gap: 8px;
+}
+.zerisetaxo-db-meta-label { color: #64748B; flex-shrink: 0; }
+.zerisetaxo-db-meta-val   { color: #1E293B; font-weight: 600; text-align: right; }
+
+/* Progress bar for accuracy */
+.zerisetaxo-db-progress-wrap { }
+.zerisetaxo-db-progress-bar-bg {
+    background: #E2E8F0;
+    border-radius: 4px;
+    height: 6px;
+    overflow: hidden;
+    margin-top: 4px;
+}
+.zerisetaxo-db-progress-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #1a56db, #22c55e);
+    transition: width 0.5s ease;
+}
+
+/* Card footer actions */
+.zerisetaxo-db-card-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 4px;
+    border-top: 1px solid #F1F5F9;
+}
+.zerisetaxo-db-card-actions .button {
+    font-size: 12px;
+    height: 30px;
+    line-height: 28px;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.zerisetaxo-db-card-actions .button .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    vertical-align: middle;
+}
+.zerisetaxo-db-card-actions .button-link-action {
+    font-size: 12px;
+    color: #64748B;
+    text-decoration: none;
+    align-self: center;
+    padding: 0 4px;
+}
+.zerisetaxo-db-card-actions .button-link-action:hover { color: #1E293B; }
+
+/* Suggestions CTA */
+.zerisetaxo-db-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+    border: 1px solid #BAE6FD;
+    border-radius: 10px;
+    padding: 16px 22px;
+    margin-bottom: 22px;
+}
+.zerisetaxo-db-cta-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.zerisetaxo-db-cta-icon {
+    width: 38px;
+    height: 38px;
+    background: #0EA5E9;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+.zerisetaxo-db-cta-text-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0C4A6E;
+    margin: 0 0 2px 0;
+}
+.zerisetaxo-db-cta-text-sub {
+    font-size: 12px;
+    color: #0369A1;
+    margin: 0;
+}
+.zerisetaxo-db-cta-btn {
+    background: #0EA5E9;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: background 0.15s;
+}
+.zerisetaxo-db-cta-btn:hover { background: #0284C7; color: #fff; }
+.zerisetaxo-db-cta-btn.hidden-cta { display: none; }
+
+/* How-it-works footer */
+.zerisetaxo-db-howto {
+    background: #FAFAFA;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 18px 22px;
+}
+.zerisetaxo-db-howto-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+    margin: 0 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.zerisetaxo-db-howto-title .dashicons { color: #64748B; font-size: 15px; width: 15px; height: 15px; vertical-align: -2px; }
+.zerisetaxo-db-tier-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+.zerisetaxo-db-tier {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+.zerisetaxo-db-tier-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: #1a56db;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+.zerisetaxo-db-tier-body {}
+.zerisetaxo-db-tier-head { font-size: 12.5px; font-weight: 700; color: #1E293B; margin: 0 0 2px; }
+.zerisetaxo-db-tier-desc { font-size: 11.5px; color: #64748B; margin: 0; line-height: 1.5; }
+
+/* --- User Guide Styles --- */
+/* Documentation Scoped Styles with Enhanced Typography */
+.zerisetaxo-doc-wrap {
+    display: grid;
+    grid-template-columns: 270px minmax(0, 1fr);
+    gap: 26px;
+    align-items: start;
+    margin-top: 14px;
+}
+@media (max-width: 960px) {
+    .zerisetaxo-doc-wrap {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Sidebar Nav */
+.zerisetaxo-doc-toc {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 18px;
+    position: sticky;
+    top: 40px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.zerisetaxo-doc-toc-title {
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #94A3B8;
+    margin: 0 0 12px 8px;
+}
+.zerisetaxo-doc-toc-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.zerisetaxo-doc-toc-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+.zerisetaxo-doc-toc-link:hover,
+.zerisetaxo-doc-toc-link.active {
+    background: #EEF2FF;
+    color: #4338CA;
+}
+.zerisetaxo-doc-toc-link i {
+    font-size: 15px;
+    width: 18px;
+    text-align: center;
+}
+
+/* Content Main */
+.zerisetaxo-doc-main {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+}
+
+/* Callout Box */
+.zerisetaxo-callout {
+    padding: 16px 20px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    line-height: 1.65;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+.zerisetaxo-callout.info {
+    background: #F0F9FF;
+    border: 1px solid #BAE6FD;
+    color: #0369A1;
+}
+.zerisetaxo-callout.tip {
+    background: #ECFDF5;
+    border: 1px solid #A7F3D0;
+    color: #047857;
+}
+.zerisetaxo-callout.warning {
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    color: #B45309;
+}
+.zerisetaxo-callout i {
+    font-size: 18px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* Code Snippet Box */
+.zerisetaxo-code-block {
+    background: #0F172A;
+    color: #F8FAFC;
+    border-radius: 10px;
+    padding: 18px 22px;
+    font-family: 'SFMono-Regular', Consolas, Monaco, monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    overflow-x: auto;
+    border: 1px solid #1E293B;
+}
+
+/* Doc Card Section */
+.zerisetaxo-doc-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 26px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    scroll-margin-top: 50px;
+}
+.zerisetaxo-doc-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 17px;
+    font-weight: 800;
+    color: #0F172A;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #F1F5F9;
+}
+.zerisetaxo-doc-card-header i {
+    color: #4F46E5;
+    font-size: 20px;
+}
+
+/* ============================================================
+   ZeriseTaxo Pro UI Extensions (2-Column, Toggles, Segmented)
+   ============================================================ */
+
+/* 2-Column Responsive Dashboard */
+.zerisetaxo-two-col {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 310px;
+    gap: 22px;
+    align-items: start;
+}
+@media (max-width: 1080px) {
+    .zerisetaxo-two-col {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Sidebar Cards */
+.zerisetaxo-sidebar-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    margin-bottom: 18px;
+    transition: all 0.2s ease;
+}
+.zerisetaxo-sidebar-card:hover {
+    box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+    border-color: #CBD5E1;
+}
+
+/* iOS-style Modern Toggle Switch */
+.zerisetaxo-toggle-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+    margin: 0;
+}
+.zerisetaxo-toggle-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0 !important;
+}
+.zerisetaxo-toggle-track {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    background-color: #CBD5E1;
+    border-radius: 24px;
+    transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+}
+.zerisetaxo-toggle-track::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background-color: #FFFFFF;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.zerisetaxo-toggle-input:checked + .zerisetaxo-toggle-track {
+    background-color: #4F46E5;
+}
+.zerisetaxo-toggle-input:checked + .zerisetaxo-toggle-track::after {
+    transform: translateX(20px);
+}
+.zerisetaxo-toggle-input:focus-visible + .zerisetaxo-toggle-track {
+    outline: 2px solid #4F46E5;
+    outline-offset: 2px;
+}
+.zerisetaxo-toggle-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #0F172A;
+    display: block;
+}
+.zerisetaxo-toggle-desc {
+    font-size: 12px;
+    color: #64748B;
+    display: block;
+    margin-top: 2px;
+}
+
+/* Modern Segmented Control */
+.zerisetaxo-segmented-control {
+    display: inline-flex;
+    background: #F1F5F9;
+    border-radius: 8px;
+    padding: 3px;
+    border: 1px solid #E2E8F0;
+    gap: 3px;
+}
+.zerisetaxo-segmented-option {
+    position: relative;
+    cursor: pointer;
+    margin: 0 !important;
+}
+.zerisetaxo-segmented-option input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.zerisetaxo-segmented-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #64748B;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+.zerisetaxo-segmented-option input:checked + .zerisetaxo-segmented-pill {
+    background: #FFFFFF;
+    color: #0F172A;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.zerisetaxo-segmented-option:hover .zerisetaxo-segmented-pill {
+    color: #0F172A;
+}
+
+/* Confidence Progress Bar */
+.zerisetaxo-conf-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: #E2E8F0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+.zerisetaxo-conf-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #10B981 0%, #059669 100%);
+    border-radius: 4px;
+    transition: width 0.4s ease-out;
+}
+
+/* ============================================================
+   ZeriseTaxo Ultra-Pro Micro-Interactions & Design System
+   ============================================================ */
+
+/* Global WordPress admin container reset for ZeriseTaxo */
+.zerisetaxo-taxonomy-dashboard-wrap {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    color: #1E293B;
+}
+
+/* Card Elevations and Smooth Transitions */
+.zerisetaxo-saas-card {
+    background: #FFFFFF !important;
+    border: 1px solid #E2E8F0 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03), 0 1px 2px rgba(15, 23, 42, 0.02) !important;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.zerisetaxo-saas-card:hover {
+    border-color: #CBD5E1 !important;
+    box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.06) !important;
+}
+
+/* Primary SaaS Button */
+.zerisetaxo-taxonomy-dashboard-wrap .button-primary {
+    background: linear-gradient(180deg, #4F46E5 0%, #4338CA 100%) !important;
+    border: 1px solid #3730A3 !important;
+    color: #FFFFFF !important;
+    border-radius: 8px !important;
+    padding: 7px 18px !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 1px 3px rgba(79, 70, 229, 0.3) !important;
+    text-shadow: none !important;
+    transition: all 0.15s ease !important;
+}
+.zerisetaxo-taxonomy-dashboard-wrap .button-primary:hover,
+.zerisetaxo-taxonomy-dashboard-wrap .button-primary:focus {
+    background: linear-gradient(180deg, #4338CA 0%, #3730A3 100%) !important;
+    border-color: #312E81 !important;
+    box-shadow: 0 3px 8px rgba(79, 70, 229, 0.4) !important;
+    transform: translateY(-1px);
+}
+
+/* Secondary Button */
+.zerisetaxo-taxonomy-dashboard-wrap .button-secondary {
+    background: #FFFFFF !important;
+    border: 1px solid #D1D5DB !important;
+    color: #374151 !important;
+    border-radius: 8px !important;
+    padding: 6px 14px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.15s ease !important;
+}
+.zerisetaxo-taxonomy-dashboard-wrap .button-secondary:hover {
+    background: #F9FAFB !important;
+    border-color: #9CA3AF !important;
+    color: #111827 !important;
+}
+
+/* Modern Input Focus Rings */
+.zerisetaxo-taxonomy-dashboard-wrap input[type="text"],
+.zerisetaxo-taxonomy-dashboard-wrap input[type="password"],
+.zerisetaxo-taxonomy-dashboard-wrap input[type="url"],
+.zerisetaxo-taxonomy-dashboard-wrap textarea {
+    border: 1px solid #CBD5E1 !important;
+    border-radius: 8px !important;
+    padding: 8px 12px !important;
+    font-size: 13.5px !important;
+    transition: all 0.15s ease !important;
+}
+.zerisetaxo-taxonomy-dashboard-wrap input[type="text"]:focus,
+.zerisetaxo-taxonomy-dashboard-wrap input[type="password"]:focus,
+.zerisetaxo-taxonomy-dashboard-wrap input[type="url"]:focus,
+.zerisetaxo-taxonomy-dashboard-wrap textarea:focus {
+    border-color: #4F46E5 !important;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15) !important;
+    outline: none !important;
+}
+
+/* KPI Card Micro-Animations */
+.zerisetaxo-taxonomy-dashboard-wrap > div:nth-child(2) > div {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.zerisetaxo-taxonomy-dashboard-wrap > div:nth-child(2) > div:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px -2px rgba(15, 23, 42, 0.08) !important;
+}
