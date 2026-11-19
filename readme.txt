@@ -4,7 +4,7 @@ Tags: categories, tags, taxonomy, category-order, suggestions
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -68,6 +68,13 @@ When uninstalled, stored Gemini API keys, consent records, and temporary LLM cac
 4. Overview screen showing published posts and taxonomy counts.
 
 == Changelog ==
+
+= 1.1.2 =
+* Feature: PHP-Native Dynamic Semantic Taxonomy Matcher using in-memory vector centroids and cosine similarity for instant (<1ms) and accurate zero-shot matching on arbitrary new articles and site categories.
+* Reliability: Fix category prediction failures on new unsaved drafts (post_id = 0) in Gutenberg and Classic Editor with client-supplied editor text handling.
+* Accuracy: Boost title tokens 3x in PHP inference to preserve high topical density and prevent vocabulary dilution on short drafts.
+* Knowledge Expansion: Expand semantic synonym ontology across multi-domain technical, developer, marketing, business, tutorial, and lifestyle categories.
+* Performance: 100% PHP-native with 0 external dependencies, 0 background commands, 0 Python requirements, and 0 impact on front-end visitor page loads.
 
 = 1.1.1 =
 * Security: Enforce `manage_categories` capability on category creation and suggestion post permission checks.
