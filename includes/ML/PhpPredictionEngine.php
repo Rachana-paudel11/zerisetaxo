@@ -514,17 +514,27 @@ class PhpPredictionEngine implements PredictionEngineInterface {
 
         $global_lower = strtolower($global_class);
 
-        // 1. Exact case-insensitive match
+        // Normalize available category names (support arrays, objects, and strings with HTML entities)
+        $clean_categories = [];
         foreach ($available_categories as $wp_cat) {
-            if (strtolower($wp_cat) === $global_lower) {
+            $cat_name = is_array($wp_cat) ? ($wp_cat['name'] ?? '') : (is_object($wp_cat) ? ($wp_cat->name ?? '') : (string) $wp_cat);
+            $decoded  = function_exists('wp_specialchars_decode') ? wp_specialchars_decode($cat_name, ENT_QUOTES) : html_entity_decode($cat_name, ENT_QUOTES, 'UTF-8');
+            $clean    = trim($decoded);
+            if (!empty($clean)) {
+                $clean_categories[$clean] = strtolower($clean);
+            }
+        }
+
+        // 1. Exact case-insensitive match
+        foreach ($clean_categories as $wp_cat => $wp_lower) {
+            if ($wp_lower === $global_lower) {
                 return $wp_cat;
             }
         }
 
         // 2. Curated topic synonym / variation match
         $synonyms = $this->topic_synonyms[$global_class] ?? [];
-        foreach ($available_categories as $wp_cat) {
-            $wp_lower = strtolower($wp_cat);
+        foreach ($clean_categories as $wp_cat => $wp_lower) {
             foreach ($synonyms as $syn) {
                 if ($wp_lower === $syn || str_contains($wp_lower, $syn)) {
                     return $wp_cat;
@@ -533,8 +543,7 @@ class PhpPredictionEngine implements PredictionEngineInterface {
         }
 
         // 3. Substring containment match
-        foreach ($available_categories as $wp_cat) {
-            $wp_lower = strtolower($wp_cat);
+        foreach ($clean_categories as $wp_cat => $wp_lower) {
             if (str_contains($wp_lower, $global_lower) || str_contains($global_lower, $wp_lower)) {
                 return $wp_cat;
             }

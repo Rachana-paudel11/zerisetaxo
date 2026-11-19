@@ -101,14 +101,26 @@ class TaxonomyMatcher {
             'yoga', 'wellness', 'mental health', 'routine', 'hydration', 'physical therapy'
         ],
         'productivity & business' => [
-            'productivity', 'remote work', 'work from home', 'wfh', 'time management',
+            'productivity', 'productive', 'remote work', 'work from home', 'wfh', 'time management',
             'habits', 'deep work', 'focus', 'business', 'startup', 'entrepreneur',
-            'entrepreneurship', 'management', 'leadership', 'strategy', 'freelancing'
+            'entrepreneurship', 'management', 'leadership', 'strategy', 'freelancing',
+            'daily habits', 'distractions', 'work tips', 'efficiency', 'goals'
         ],
-        'design & photography' => [
-            'design', 'ui', 'ux', 'web design', 'graphic design', 'graphics', 'photography',
-            'photo', 'photos', 'camera', 'art', 'creative', 'illustration', 'typography',
-            'colors', 'figma', 'portrait', 'lighting', 'lens', 'shutter', 'aperture'
+        'lifestyle' => [
+            'lifestyle', 'life', 'habits', 'daily habits', 'daily routine', 'morning routine',
+            'habits to boost', 'focus', 'daily focus', 'productivity', 'productive', 'distractions',
+            'work or home', 'work tips', 'time management', 'personal growth', 'self improvement',
+            'wellness', 'mindset', 'life hacks', 'living', 'work life balance', 'fashion',
+            'style', 'beauty', 'outfits', 'wardrobe', 'trends', 'home decor'
+        ],
+        'fashion' => [
+            'fashion', 'style', 'clothing', 'clothes', 'outfits', 'apparel', 'trends',
+            'wardrobe', 'accessories', 'shoes', 'designer', 'runway', 'streetwear', 'beauty'
+        ],
+        'science' => [
+            'science', 'scientific', 'physics', 'chemistry', 'biology', 'laboratory',
+            'experiment', 'experiments', 'astronomy', 'quantum', 'astrophysics', 'scientists',
+            'hypothesis', 'peer reviewed', 'molecule', 'genetics', 'ecology', 'scientific research'
         ],
         'news & updates' => [
             'news', 'update', 'updates', 'announcement', 'announcements', 'release',
@@ -190,7 +202,9 @@ class TaxonomyMatcher {
         $scores       = [];
 
         foreach ($categories as $cat) {
-            $cat_name = is_array($cat) ? ($cat['name'] ?? '') : (is_object($cat) ? ($cat->name ?? '') : (string) $cat);
+            $raw_cat_name = is_array($cat) ? ($cat['name'] ?? '') : (is_object($cat) ? ($cat->name ?? '') : (string) $cat);
+            // Decode HTML entities (e.g. &amp; or &#038;) to ensure clean lexical matching
+            $cat_name = function_exists('wp_specialchars_decode') ? wp_specialchars_decode($raw_cat_name, ENT_QUOTES) : html_entity_decode($raw_cat_name, ENT_QUOTES, 'UTF-8');
             if (empty($cat_name) || mb_strtolower($cat_name) === 'uncategorized') {
                 continue;
             }
@@ -203,21 +217,29 @@ class TaxonomyMatcher {
             $category_map[$cat_name] = $term_id;
 
             $cat_lower = mb_strtolower($cat_name, 'UTF-8');
-            $score     = 0.0;
+            $cat_tokens = preg_split('/[^\p{L}\p{N}]+/u', $cat_lower, -1, PREG_SPLIT_NO_EMPTY);
+            $is_multi_word = count($cat_tokens) > 1;
+            $score = 0.0;
 
-            // 1. Exact verbatim category phrase match (strongest signal)
+            // 1. Exact verbatim category phrase match
             if (preg_match('/\b' . preg_quote($cat_lower, '/') . '\b/u', $title_clean)) {
                 $score += 12.0;
             } elseif (preg_match('/\b' . preg_quote($cat_lower, '/') . '\b/u', $content_clean)) {
-                $score += 6.0;
+                // Multi-word exact match in content is very specific (+6.0).
+                // Single-word generic match in content is calibrated by count (prevents incidental modifier trigger like "science-backed")
+                if ($is_multi_word) {
+                    $score += 6.0;
+                } else {
+                    $occurrences = preg_match_all('/\b' . preg_quote($cat_lower, '/') . '\b/u', $content_clean);
+                    $score += min(5.0, 1.0 + ($occurrences * 1.0));
+                }
             } elseif (str_contains($title_clean, $cat_lower)) {
                 $score += 8.0;
             } elseif (str_contains($content_clean, $cat_lower)) {
-                $score += 4.0;
+                $score += $is_multi_word ? 4.0 : 1.5;
             }
 
             // 2. Individual non-stopword tokens of category name
-            $cat_tokens = preg_split('/[^\p{L}\p{N}]+/u', $cat_lower, -1, PREG_SPLIT_NO_EMPTY);
             foreach ($cat_tokens as $ctok) {
                 if (isset(self::$stopwords[$ctok]) || mb_strlen($ctok) < 2) {
                     continue;
@@ -240,7 +262,7 @@ class TaxonomyMatcher {
             if (!empty($category_details)) {
                 foreach ($category_details as $cd) {
                     $c_name = is_array($cd) ? ($cd['name'] ?? '') : ($cd->name ?? '');
-                    if ($c_name === $cat_name && !empty($cd['description'])) {
+                    if ($c_name === $raw_cat_name && !empty($cd['description'])) {
                         $desc_tokens = preg_split('/[^\p{L}\p{N}]+/u', mb_strtolower($cd['description'], 'UTF-8'), -1, PREG_SPLIT_NO_EMPTY);
                         $common = array_intersect($title_words, $desc_tokens);
                         $score += count($common) * 2.5;
@@ -260,7 +282,7 @@ class TaxonomyMatcher {
             if (!empty($category_details)) {
                 foreach ($category_details as $cd) {
                     $c_name = is_array($cd) ? ($cd['name'] ?? '') : ($cd->name ?? '');
-                    if ($c_name === $cat_name && !empty($cd['description'])) {
+                    if ($c_name === $raw_cat_name && !empty($cd['description'])) {
                         $desc_tf = self::extract_term_frequencies($cd['description']);
                         foreach ($desc_tf as $dw => $dcnt) {
                             $cat_vector[$dw] = ($cat_vector[$dw] ?? 0.0) + (1.5 * (1.0 + log((float)$dcnt)));
@@ -269,20 +291,26 @@ class TaxonomyMatcher {
                 }
             }
 
-            // Add semantic cluster terms to centroid and score
-            $cluster_terms = self::$semantic_clusters[$cat_lower] ?? [];
-            if (empty($cluster_terms)) {
-                foreach (self::$semantic_clusters as $cl_key => $cl_terms) {
-                    if (str_contains($cat_lower, $cl_key) || str_contains($cl_key, $cat_lower)) {
-                        $cluster_terms = array_merge($cluster_terms, $cl_terms);
+            // Semantic cluster expansion: check both full category name and individual category tokens
+            $cluster_terms = [];
+            foreach (self::$semantic_clusters as $cl_key => $cl_terms) {
+                if (str_contains($cat_lower, $cl_key) || str_contains($cl_key, $cat_lower)) {
+                    $cluster_terms = array_merge($cluster_terms, $cl_terms);
+                } else {
+                    foreach ($cat_tokens as $ctok) {
+                        if (!isset(self::$stopwords[$ctok]) && (str_contains($ctok, $cl_key) || str_contains($cl_key, $ctok))) {
+                            $cluster_terms = array_merge($cluster_terms, $cl_terms);
+                        }
                     }
                 }
             }
+            $cluster_terms = array_unique($cluster_terms);
+
             foreach ($cluster_terms as $ct) {
                 if (preg_match('/\b' . preg_quote($ct, '/') . '\b/u', $title_clean)) {
                     $score += 3.0;
                 } elseif (preg_match('/\b' . preg_quote($ct, '/') . '\b/u', $content_clean)) {
-                    $score += 1.2;
+                    $score += 1.0;
                 }
                 $ct_words = self::extract_term_frequencies($ct);
                 foreach ($ct_words as $ctw => $ct_cnt) {
@@ -302,7 +330,7 @@ class TaxonomyMatcher {
             $cat_norm = $cat_sum_sq > 0.0 ? sqrt($cat_sum_sq) : 1.0;
             $cosine   = $dot_product / ($article_norm * $cat_norm);
 
-            $score += $cosine * 5.0;
+            $score += $cosine * 6.0;
 
             if ($score > 0.5) {
                 $scores[$cat_name] = $score;

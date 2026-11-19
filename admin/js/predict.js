@@ -483,10 +483,10 @@
                         $('#zerisetaxo-error-btn-text').text(zeriseTaxoData.i18n.tryAgain || 'Try again');
 
                         $('#zerisetaxo-ambig-opt-1').val(opt1Id).attr('data-cat-name', opt1Name).data('catName', opt1Name);
-                        $('#zerisetaxo-ambig-label-1').text(opt1Name);
+                        $('#zerisetaxo-ambig-label-1').text(decodeHtmlEntities(opt1Name));
 
                         $('#zerisetaxo-ambig-opt-2').val(opt2Id).attr('data-cat-name', opt2Name).data('catName', opt2Name);
-                        $('#zerisetaxo-ambig-label-2').text(opt2Name);
+                        $('#zerisetaxo-ambig-label-2').text(decodeHtmlEntities(opt2Name));
 
                         $('#zerisetaxo-ambig-opt-1').prop('checked', true);
 
@@ -504,9 +504,9 @@
                 if (state !== 'ambiguous' && termId > 0 && response.category && resultType === 'existing') {
                     // State: Recommended / Confident (Requires valid existing canonical termId > 0)
                     currentRecTermId     = termId;
-                    currentRecCatName    = response.category;
+                    currentRecCatName    = decodeHtmlEntities(response.category);
                     currentRecParentId   = parseInt(response.parent_id, 10) || 0;
-                    currentRecParentName = response.parent_name || '';
+                    currentRecParentName = decodeHtmlEntities(response.parent_name || '');
                     lastPredictedContent = postData.title + '|' + postData.content;
 
                     $('#zerisetaxo-rec-category-name').text(currentRecCatName);
@@ -536,9 +536,9 @@
                     var altConfidence = (response.runner_up_confidence !== null && response.runner_up_confidence !== undefined) ? parseFloat(response.runner_up_confidence) : 0;
                     if (zeriseTaxoData.showAlternative && response.runner_up_category && altTermId > 0 && altConfidence >= 0.10) {
                         currentAltTermId     = altTermId;
-                        currentAltCatName    = response.runner_up_category;
+                        currentAltCatName    = decodeHtmlEntities(response.runner_up_category);
                         currentAltParentId   = parseInt(response.runner_up_parent_id, 10) || 0;
-                        currentAltParentName = response.runner_up_parent_name || '';
+                        currentAltParentName = decodeHtmlEntities(response.runner_up_parent_name || '');
                         $('#zerisetaxo-alt-category-name').text(currentAltCatName);
                         $('#zerisetaxo-alternative-box').removeClass('hidden');
                     } else {
@@ -1060,7 +1060,7 @@
                 }
 
                 var $chip = $('<button type="button" class="zerisetaxo-cat-chip-btn"></button>')
-                    .data('catName', item.name)
+                    .data('catName', decodeHtmlEntities(item.name))
                     .data('termId', termId)
                     .data('parentId', parentId)
                     .data('isNew', isNew)
@@ -1128,8 +1128,16 @@
             return [];
         }
 
+        function decodeHtmlEntities(str) {
+            if (!str) return '';
+            var txt = document.createElement('textarea');
+            txt.innerHTML = str;
+            return txt.value;
+        }
+
         function escapeHtml(str) {
-            return $('<div>').text(str || '').html();
+            var decoded = decodeHtmlEntities(str);
+            return $('<div>').text(decoded).html();
         }
 
         $(document).on('click', '#zerisetaxo-suggest-tags-btn', function (e) {

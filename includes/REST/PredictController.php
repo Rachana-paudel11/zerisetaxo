@@ -309,13 +309,18 @@ class PredictController {
 
         // Fetch all active categories from WordPress with taxonomy metadata
         $categories           = get_categories(['hide_empty' => false]);
-        $available_categories = !empty($categories) ? wp_list_pluck($categories, 'name') : [];
+        $available_categories = [];
         $category_details     = [];
         foreach ($categories as $cat) {
+            $cat_name    = function_exists('wp_specialchars_decode') ? wp_specialchars_decode($cat->name, ENT_QUOTES) : html_entity_decode($cat->name, ENT_QUOTES, 'UTF-8');
             $parent_name = $cat->parent ? get_cat_name($cat->parent) : '';
+            if ($parent_name && function_exists('wp_specialchars_decode')) {
+                $parent_name = wp_specialchars_decode($parent_name, ENT_QUOTES);
+            }
+            $available_categories[] = $cat_name;
             $category_details[] = [
                 'term_id'     => (int) $cat->term_id,
-                'name'        => $cat->name,
+                'name'        => $cat_name,
                 'slug'        => $cat->slug,
                 'description' => $cat->description,
                 'parent_name' => $parent_name,
@@ -629,35 +634,43 @@ class PredictController {
 
                 $cand_parent_id = ($cand_term->parent > 0) ? (int) $cand_term->parent : 0;
                 $cand_parent_name = ($cand_parent_id > 0) ? get_cat_name($cand_parent_id) : '';
+                $clean_cand_name = function_exists('wp_specialchars_decode') ? wp_specialchars_decode($cand_term->name, ENT_QUOTES) : html_entity_decode($cand_term->name, ENT_QUOTES, 'UTF-8');
+                $clean_parent_name = $cand_parent_name && function_exists('wp_specialchars_decode') ? wp_specialchars_decode($cand_parent_name, ENT_QUOTES) : html_entity_decode($cand_parent_name, ENT_QUOTES, 'UTF-8');
 
                 $candidate_categories_data[] = [
-                    'name'        => $cand_name,
+                    'name'        => $clean_cand_name,
                     'term_id'     => $cand_id,
                     'parent_id'   => $cand_parent_id,
-                    'parent_name' => $cand_parent_name,
+                    'parent_name' => $clean_parent_name,
                     'confidence'  => isset($cand['confidence']) ? (float) $cand['confidence'] : 0.0,
                     'is_new'      => false,
                 ];
             }
         }
 
+        $decoded_category = function_exists('wp_specialchars_decode') ? wp_specialchars_decode($category, ENT_QUOTES) : html_entity_decode($category, ENT_QUOTES, 'UTF-8');
+        $decoded_suggested = function_exists('wp_specialchars_decode') ? wp_specialchars_decode($suggested_category, ENT_QUOTES) : html_entity_decode($suggested_category, ENT_QUOTES, 'UTF-8');
+        $decoded_parent = function_exists('wp_specialchars_decode') ? wp_specialchars_decode($parent_name, ENT_QUOTES) : html_entity_decode($parent_name, ENT_QUOTES, 'UTF-8');
+        $decoded_runner_up = function_exists('wp_specialchars_decode') ? wp_specialchars_decode($runner_up_category, ENT_QUOTES) : html_entity_decode($runner_up_category, ENT_QUOTES, 'UTF-8');
+        $decoded_ru_parent = function_exists('wp_specialchars_decode') ? wp_specialchars_decode($runner_up_parent_name, ENT_QUOTES) : html_entity_decode($runner_up_parent_name, ENT_QUOTES, 'UTF-8');
+
         return new \WP_REST_Response([
             'post_id'                => $post_id,
             'tier_used'              => $tier_used,
             'tier_name'              => $tier_name,
             'result_type'            => $result_type,
-            'category'               => $category,
-            'suggested_category'     => $suggested_category,
+            'category'               => $decoded_category,
+            'suggested_category'     => $decoded_suggested,
             'confidence'             => $confidence,
             'confidence_label'       => $confidence_label,
             'reasoning'              => $reasoning,
             'category_id'            => $term_id,
             'parent_id'              => $parent_id,
-            'parent_name'            => $parent_name,
-            'runner_up_category'     => $runner_up_category,
+            'parent_name'            => $decoded_parent,
+            'runner_up_category'     => $decoded_runner_up,
             'runner_up_category_id'  => $runner_up_term_id,
             'runner_up_parent_id'    => $runner_up_parent_id,
-            'runner_up_parent_name'  => $runner_up_parent_name,
+            'runner_up_parent_name'  => $decoded_ru_parent,
             'runner_up_confidence'   => $runner_up_confidence,
             'candidate_categories'   => $candidate_categories_data,
             'scores'                 => $result['scores'] ?? [],
