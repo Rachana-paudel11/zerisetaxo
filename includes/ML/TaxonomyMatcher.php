@@ -96,9 +96,14 @@ class TaxonomyMatcher {
             'budget travel', 'travel guide', 'tourist', 'explore'
         ],
         'fitness & health' => [
-            'health', 'fitness', 'workout', 'workouts', 'gym', 'exercise', 'training',
-            'cardio', 'strength', 'bodybuilding', 'muscle', 'weight loss', 'running',
-            'yoga', 'wellness', 'mental health', 'routine', 'hydration', 'physical therapy'
+            'health', 'healthy', 'wellness', 'wellbeing', 'well-being', 'mindfulness', 'meditation',
+            'morning routine', 'daily routine', 'digital detox', 'without screens', 'screen time',
+            'screens', 'offline', 'stretch', 'stretching', 'water', 'hydration', 'brain', 'habits',
+            'healthy habits', 'self care', 'self-care', 'sleep', 'nutrition', 'diet', 'mental health',
+            'relaxation', 'calm', 'rest', 'healthy living', 'start your day', 'inbox', 'priorities',
+            'stress relief', 'immune system', 'physical health', 'vitality', 'longevity', 'fitness',
+            'workout', 'workouts', 'gym', 'exercise', 'training', 'cardio', 'strength', 'bodybuilding',
+            'muscle', 'weight loss', 'running', 'yoga', 'routine', 'physical therapy'
         ],
         'productivity & business' => [
             'productivity', 'productive', 'remote work', 'work from home', 'wfh', 'time management',
@@ -294,14 +299,28 @@ class TaxonomyMatcher {
             // Semantic cluster expansion: check both full category name and individual category tokens
             $cluster_terms = [];
             foreach (self::$semantic_clusters as $cl_key => $cl_terms) {
+                $matched_cluster = false;
                 if (str_contains($cat_lower, $cl_key) || str_contains($cl_key, $cat_lower)) {
-                    $cluster_terms = array_merge($cluster_terms, $cl_terms);
+                    $matched_cluster = true;
                 } else {
+                    $key_tokens = preg_split('/[^\p{L}\p{N}]+/u', $cl_key, -1, PREG_SPLIT_NO_EMPTY);
                     foreach ($cat_tokens as $ctok) {
-                        if (!isset(self::$stopwords[$ctok]) && (str_contains($ctok, $cl_key) || str_contains($cl_key, $ctok))) {
-                            $cluster_terms = array_merge($cluster_terms, $cl_terms);
+                        if (isset(self::$stopwords[$ctok]) || mb_strlen($ctok) < 3) {
+                            continue;
+                        }
+                        foreach ($key_tokens as $ktok) {
+                            if (isset(self::$stopwords[$ktok]) || mb_strlen($ktok) < 3) {
+                                continue;
+                            }
+                            if ($ctok === $ktok || str_starts_with($ctok, $ktok) || str_starts_with($ktok, $ctok)) {
+                                $matched_cluster = true;
+                                break 2;
+                            }
                         }
                     }
+                }
+                if ($matched_cluster) {
+                    $cluster_terms = array_merge($cluster_terms, $cl_terms);
                 }
             }
             $cluster_terms = array_unique($cluster_terms);

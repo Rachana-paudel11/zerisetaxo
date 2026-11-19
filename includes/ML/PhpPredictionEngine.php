@@ -49,7 +49,7 @@ class PhpPredictionEngine implements PredictionEngineInterface {
         'Business'           => ['business & finance', 'entrepreneurship', 'startups', 'corporate', 'economy', 'management', 'leadership', 'small business', 'enterprise'],
         'Finance'            => ['financial', 'investing', 'money', 'banking', 'economy', 'wealth', 'personal finance', 'stocks', 'accounting', 'taxes'],
         'Science'            => ['sciences', 'scientific', 'biology', 'physics', 'chemistry', 'astronomy', 'research', 'lab'],
-        'Health'             => ['healthcare', 'health & wellness', 'wellness', 'medicine', 'medical', 'healthy living', 'diet', 'nutrition', 'mental health'],
+        'Health'             => ['healthcare', 'health & wellness', 'wellness', 'medicine', 'medical', 'healthy living', 'healthy', 'living', 'diet', 'nutrition', 'mental health', 'wellbeing', 'routine'],
         'Entertainment'      => ['entertainment & media', 'movies', 'cinema', 'television', 'tv', 'pop culture', 'celebrity', 'film', 'theater', 'shows'],
         'Politics'           => ['political', 'government', 'public policy', 'election', 'elections', 'policy', 'democracy'],
         'Education'          => ['learning', 'schools', 'university', 'academia', 'teaching', 'study', 'education & learning', 'tutorials', 'courses'],
@@ -258,23 +258,26 @@ class PhpPredictionEngine implements PredictionEngineInterface {
         $raw = $this->predict($inference_text, 10);
 
         // Polysemy & Contextual Disambiguation
-        // A. Travel vs Corporate Governance:
-        // Words like "board" (board of directors), "outside" (outside counsel), "effort" heavily boost Travel.
-        // If text contains corporate governance terms and no genuine travel terms, neutralize Travel's polysemous weight.
+        // A. Travel vs Corporate Governance / Digital Routines / Figurative Phrasing:
+        // Words like "board" (directors), "outside" (counsel), "diving" (diving into messages), "checking" (checking phone), "spend" (spend time) heavily boost Travel.
+        // If text contains corporate governance or daily routine/wellness terms and no genuine travel terms, neutralize Travel's polysemous weight.
         $text_lower = mb_strtolower($clean_text, 'UTF-8');
         $has_corporate = (bool) preg_match('/\b(board of directors|directors|ceo|shareholders|counsel|corporate governance|committee of independent|independent counsel|economic security)\b/u', $text_lower);
-        $has_genuine_travel = (bool) preg_match('/\b(travel|trip|flight|hotel|tour|destination|vacation|resort|airline|airport|cruise|beach|tourism|passport|itinerary|luggage|baggage|transit)\b/u', $text_lower);
+        $has_genuine_travel = (bool) preg_match('/\b(travel|trip|flight|hotel|tour|destination|vacation|resort|airline|airport|cruise|beach|tourism|passport|itinerary|luggage|baggage|transit|backpacking|sightseeing)\b/u', $text_lower);
         $has_tech_entities = (bool) preg_match('/\b(nvidia|intel|amd|gpu|gpus|semiconductor|semiconductors|jensen huang|artificial intelligence|microprocessor|microchip)\b/u', $text_lower);
+        $has_digital_routine = (bool) preg_match('/\b(screens|screen time|phone|inbox|messages|social media|morning|routine|habits|offline|productivity|stretch|water)\b/u', $text_lower);
 
-        if ($has_corporate && !$has_genuine_travel && isset($raw['probabilities']['Travel'])) {
+        $travel_dampened = false;
+        if (($has_corporate || $has_digital_routine) && !$has_genuine_travel && isset($raw['probabilities']['Travel'])) {
             $raw['probabilities']['Travel'] *= 0.1;
+            $travel_dampened = true;
         }
         if ($has_tech_entities && isset($raw['probabilities']['Tech'])) {
             $raw['probabilities']['Tech'] += 0.35;
         }
 
         // Re-normalize probabilities and update top slices if disambiguation adjustments occurred
-        if (($has_corporate && !$has_genuine_travel) || $has_tech_entities) {
+        if ($travel_dampened || $has_tech_entities) {
             $sum_p = array_sum($raw['probabilities']);
             if ($sum_p > 0) {
                 foreach ($raw['probabilities'] as $cat_key => $val) {
