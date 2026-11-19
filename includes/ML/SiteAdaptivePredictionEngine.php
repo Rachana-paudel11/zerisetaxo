@@ -191,6 +191,72 @@ class SiteAdaptivePredictionEngine implements PredictionEngineInterface {
 
         $global_res = $this->global_engine->predict_category($text, $context);
 
+        // 2.5 Direct Taxonomy & Semantic Keyword Grounding Check
+        $title = $context['title'] ?? '';
+        if (empty($title)) {
+            $lines = explode("\n", trim($text));
+            $title = !empty($lines[0]) ? mb_substr(trim($lines[0]), 0, 100) : '';
+        }
+        $categories = $context['category_details'] ?? $context['available_categories'] ?? [];
+        if (empty($categories) && function_exists('get_categories')) {
+            $categories = get_categories(['hide_empty' => false]);
+        }
+
+        $tax_match = TaxonomyMatcher::match($title, $text, (array) $categories, $context['category_details'] ?? []);
+
+        // If taxonomy matcher found a direct keyword or synonym match on the site's actual categories:
+        if (!empty($tax_match['matched'])) {
+            $tax_cat = $tax_match['category'];
+            $is_global_resolved = (
+                ($global_res['result_type'] ?? '') === 'existing' &&
+                in_array($global_res['state'] ?? '', ['confident', 'good_match'], true) &&
+                !empty($global_res['category'])
+            );
+
+            $tax_confidence    = (float) ($tax_match['confidence'] ?? 0.0);
+            $global_confidence = (float) ($global_res['confidence'] ?? 0.0);
+
+            // Taxonomy matcher takes precedence when:
+            // 1. Global model failed to resolve an existing category (OOD or none)
+            // 2. Both agree on the same category (boosting confidence)
+            // 3. Taxonomy matcher has higher confidence or strong direct title match (>= 0.70)
+            $use_tax_match = (
+                !$is_global_resolved ||
+                strtolower($global_res['category']) === strtolower($tax_cat) ||
+                ($tax_confidence >= 0.70 && $tax_confidence >= $global_confidence)
+            );
+
+            if ($use_tax_match) {
+                $confidence = $is_global_resolved 
+                    ? max($global_confidence, $tax_confidence) 
+                    : $tax_confidence;
+
+                return [
+                    'tier_used'            => 1,
+                    'tier_name'            => 'PHP Native Taxonomy Matcher',
+                    'result_type'          => 'existing',
+                    'category'             => $tax_cat,
+                    'term_id'              => $tax_match['term_id'] ?? 0,
+                    'suggested_category'   => '',
+                    'confidence'           => $confidence,
+                    'reasoning'            => $tax_match['reasoning'],
+                    'state'                => $confidence >= 0.75 ? 'confident' : 'good_match',
+                    'runner_up_category'   => $tax_match['runner_up_category'] ?? ($global_res['runner_up_category'] ?? ''),
+                    'runner_up_confidence' => $tax_match['runner_up_confidence'] ?? ($global_res['runner_up_confidence'] ?? null),
+                    'margin'               => $tax_match['margin'] ?? 0.15,
+                    'is_ood'               => false,
+                    'decision_source'      => 'php_taxonomy_grounding',
+                    'scores'               => $tax_match['scores'] ?? [],
+                    'tier_breakdown'       => [
+                        'taxonomy_matcher' => [
+                            'category'   => $tax_cat,
+                            'confidence' => $tax_match['confidence'],
+                        ],
+                    ],
+                ];
+            }
+        }
+
         // If global model safely and confidently resolved the category, STOP here (Zero LLM call)
         $is_safe_existing = (
             ($global_res['result_type'] ?? '') === 'existing' &&

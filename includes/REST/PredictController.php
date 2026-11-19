@@ -270,24 +270,25 @@ class PredictController {
      * @return \WP_REST_Response|\WP_Error
      */
     public function handle_predict(\WP_REST_Request $request) {
-        $post_id = absint($request->get_param('post_id'));
-        $post    = get_post($post_id);
+        $post_id        = absint($request->get_param('post_id'));
+        $post           = $post_id ? get_post($post_id) : null;
+        $client_title   = $request->get_param('client_title');
+        $client_content = $request->get_param('client_content');
 
-        if (!$post || ($post->post_type ?? '') !== 'post') {
+        // If post_id is provided and post exists, verify it is a valid post type
+        if ($post && !in_array($post->post_type, ['post', 'revision'], true)) {
             return new \WP_Error(
                 'invalid_post',
-                __('Invalid post ID provided or post does not exist.', 'zerisetaxo'),
+                __('Invalid post type provided. Predictions are supported for posts.', 'zerisetaxo'),
                 ['status' => 400]
             );
         }
 
-        // Fetch post title + content (fallback to client-supplied editor text if user has unsaved edits in Gutenberg)
-        $title = trim($post->post_title);
-        $raw_post_content = function_exists('strip_shortcodes') ? strip_shortcodes($post->post_content) : $post->post_content;
+        // Fetch post title + content from post object or editor payload (supports new unsaved posts/drafts)
+        $title = $post ? trim($post->post_title) : '';
+        $raw_post_content = ($post && function_exists('strip_shortcodes')) ? strip_shortcodes($post->post_content) : ($post ? $post->post_content : '');
         $content = wp_strip_all_tags($raw_post_content);
 
-        $client_title   = $request->get_param('client_title');
-        $client_content = $request->get_param('client_content');
         if (!empty($client_title)) {
             $title = trim(sanitize_text_field($client_title));
         }
@@ -453,19 +454,21 @@ class PredictController {
             }
         }
 
-        // Save prediction details as post meta
+                // Save prediction details as post meta (only for saved posts with ID > 0)
         $tier_breakdown = $result['tier_breakdown'] ?? [];
-        update_post_meta($post_id, '_zerisetaxo_predicted_category', $category);
-        update_post_meta($post_id, '_zerisetaxo_predicted_category_id', $term_id);
-        update_post_meta($post_id, '_zerisetaxo_prediction_confidence', $confidence);
-        update_post_meta($post_id, '_zerisetaxo_prediction_reasoning', $reasoning);
-        update_post_meta($post_id, '_zerisetaxo_prediction_tier', $tier_used);
-        update_post_meta($post_id, '_zerisetaxo_prediction_tier_name', $tier_name);
-        update_post_meta($post_id, '_zerisetaxo_prediction_tier_breakdown', $tier_breakdown);
-        update_post_meta($post_id, '_zerisetaxo_enable_zero_shot', $enable_zero_shot ? 1 : 0);
-        update_post_meta($post_id, '_zerisetaxo_enable_llm', $enable_llm ? 1 : 0);
-        update_post_meta($post_id, '_zerisetaxo_prediction_state', $state);
-        update_post_meta($post_id, '_zerisetaxo_decision_source', $decision_source);
+        if ($post_id > 0) {
+            update_post_meta($post_id, '_zerisetaxo_predicted_category', $category);
+            update_post_meta($post_id, '_zerisetaxo_predicted_category_id', $term_id);
+            update_post_meta($post_id, '_zerisetaxo_prediction_confidence', $confidence);
+            update_post_meta($post_id, '_zerisetaxo_prediction_reasoning', $reasoning);
+            update_post_meta($post_id, '_zerisetaxo_prediction_tier', $tier_used);
+            update_post_meta($post_id, '_zerisetaxo_prediction_tier_name', $tier_name);
+            update_post_meta($post_id, '_zerisetaxo_prediction_tier_breakdown', $tier_breakdown);
+            update_post_meta($post_id, '_zerisetaxo_enable_zero_shot', $enable_zero_shot ? 1 : 0);
+            update_post_meta($post_id, '_zerisetaxo_enable_llm', $enable_llm ? 1 : 0);
+            update_post_meta($post_id, '_zerisetaxo_prediction_state', $state);
+            update_post_meta($post_id, '_zerisetaxo_decision_source', $decision_source);
+        }
 
                 // Apply Category Ordering Strategy (Category Order & Taxonomy Terms Order compatibility)
         $order_mode = get_option('zerisetaxo_category_order_mode', 'custom_order');

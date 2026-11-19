@@ -40,18 +40,47 @@ class PhpPredictionEngine implements PredictionEngineInterface {
      * @var array<string, array<string>>
      */
     private array $topic_synonyms = [
-        'Tech'          => ['technology', 'technologies', 'tech', 'software', 'hardware', 'computers', 'laptops', 'gadgets', 'electronics', 'it', 'tech news', 'programming', 'web development', 'web dev', 'coding', 'devices', 'pc'],
-        'Gaming'        => ['games', 'gaming', 'video games', 'gamer', 'esports', 'pc gaming', 'game reviews', 'consoles', 'playstation', 'xbox', 'nintendo'],
-        'Sport'         => ['sports', 'athletics', 'football', 'soccer', 'basketball', 'cricket', 'fitness'],
-        'Food'          => ['food & dining', 'food and drink', 'cooking', 'recipes', 'cuisine', 'culinary'],
-        'Travel'        => ['travel & tourism', 'tourism', 'destinations', 'vacations', 'adventures'],
-        'Business'      => ['business & finance', 'entrepreneurship', 'startups', 'corporate', 'economy'],
-        'Finance'       => ['financial', 'investing', 'money', 'banking', 'economy', 'wealth', 'personal finance'],
-        'Science'       => ['sciences', 'scientific', 'biology', 'physics', 'chemistry', 'astronomy'],
-        'Health'        => ['healthcare', 'health & wellness', 'wellness', 'medicine', 'medical', 'healthy living'],
-        'Entertainment' => ['entertainment & media', 'movies', 'cinema', 'television', 'tv', 'pop culture'],
-        'Politics'      => ['political', 'government', 'public policy', 'election', 'elections'],
-        'Education'     => ['learning', 'schools', 'university', 'academia', 'teaching'],
+        'Tech'               => ['technology', 'technologies', 'tech', 'software', 'hardware', 'computers', 'laptops', 'gadgets', 'electronics', 'it', 'tech news', 'programming', 'web development', 'web dev', 'coding', 'devices', 'pc', 'wordpress', 'wp', 'cms', 'plugins', 'themes', 'web', 'internet', 'apps', 'applications'],
+        'Marketing'          => ['seo', 'marketing', 'digital marketing', 'search engine optimization', 'content marketing', 'social media', 'advertising', 'ads', 'affiliate', 'branding', 'email marketing', 'traffic', 'copywriting', 'growth', 'pr', 'public relations'],
+        'Gaming'             => ['games', 'gaming', 'video games', 'gamer', 'esports', 'pc gaming', 'game reviews', 'consoles', 'playstation', 'xbox', 'nintendo'],
+        'Sport'              => ['sports', 'athletics', 'football', 'soccer', 'basketball', 'cricket', 'fitness', 'tennis', 'baseball', 'olympics'],
+        'Food'               => ['food & dining', 'food and drink', 'cooking', 'recipes', 'cuisine', 'culinary', 'baking', 'restaurant', 'nutrition', 'dining'],
+        'Travel'             => ['travel & tourism', 'tourism', 'destinations', 'vacations', 'adventures', 'trip', 'hotel', 'flight', 'backpacking'],
+        'Business'           => ['business & finance', 'entrepreneurship', 'startups', 'corporate', 'economy', 'management', 'leadership', 'small business', 'enterprise'],
+        'Finance'            => ['financial', 'investing', 'money', 'banking', 'economy', 'wealth', 'personal finance', 'stocks', 'accounting', 'taxes'],
+        'Science'            => ['sciences', 'scientific', 'biology', 'physics', 'chemistry', 'astronomy', 'research', 'lab'],
+        'Health'             => ['healthcare', 'health & wellness', 'wellness', 'medicine', 'medical', 'healthy living', 'diet', 'nutrition', 'mental health'],
+        'Entertainment'      => ['entertainment & media', 'movies', 'cinema', 'television', 'tv', 'pop culture', 'celebrity', 'film', 'theater', 'shows'],
+        'Politics'           => ['political', 'government', 'public policy', 'election', 'elections', 'policy', 'democracy'],
+        'Education'          => ['learning', 'schools', 'university', 'academia', 'teaching', 'study', 'education & learning', 'tutorials', 'courses'],
+        'DIY & Crafts'       => ['diy', 'crafts', 'do it yourself', 'tutorials', 'how to', 'handmade', 'woodworking', 'sewing', 'home improvement', 'hacks', 'tips & tricks'],
+        'Photography'        => ['photo', 'photos', 'camera', 'cameras', 'photographer', 'photo editing', 'portrait', 'landscape photography', 'gear', 'lens'],
+        'Fitness'            => ['workout', 'exercise', 'gym', 'training', 'bodybuilding', 'weight loss', 'cardio', 'yoga', 'crossfit', 'strength'],
+        'Cryptocurrency'     => ['crypto', 'bitcoin', 'btc', 'ethereum', 'eth', 'blockchain', 'web3', 'defi', 'nft', 'altcoins', 'tokens'],
+        'Beauty'             => ['beauty', 'skincare', 'makeup', 'cosmetics', 'hair', 'haircare', 'wellness', 'fragrance', 'grooming'],
+        'Fashion'            => ['clothing', 'style', 'apparel', 'outfits', 'trends', 'shoes', 'accessories', 'wardrobe'],
+        'Real Estate'        => ['property', 'housing', 'realty', 'real estate', 'mortgage', 'renting', 'home buying', 'properties'],
+        'Home & Garden'      => ['interior design', 'gardening', 'home decor', 'decor', 'landscaping', 'furniture', 'renovation', 'patio'],
+        'Parenting'          => ['family', 'kids', 'children', 'baby', 'parenting tips', 'motherhood', 'fatherhood', 'toddler'],
+        'Pets & Animals'     => ['pets', 'dogs', 'cats', 'animals', 'puppy', 'veterinary', 'pet care', 'wildlife', 'dog training'],
+        'Automotive'         => ['cars', 'vehicles', 'automotive', 'auto', 'driving', 'motorsport', 'mechanic', 'electric vehicles', 'ev'],
+        'Aviation'           => ['aviation', 'airplanes', 'flights', 'aircraft', 'airlines', 'pilots', 'aerospace'],
+        'Music'              => ['songs', 'albums', 'musical', 'guitar', 'piano', 'singing', 'audio', 'bands', 'artists'],
+        'Literature'         => ['books', 'reading', 'novel', 'poetry', 'literature', 'fiction', 'non-fiction', 'authors', 'book reviews'],
+        'Visual Arts'        => ['art', 'artwork', 'painting', 'drawing', 'illustration', 'graphic design', 'fine art', 'sculpture'],
+        'Environment'        => ['sustainability', 'ecology', 'climate change', 'green living', 'conservation', 'environment', 'nature', 'renewable'],
+        'Energy'             => ['solar', 'wind energy', 'clean energy', 'electricity', 'power', 'oil & gas', 'nuclear energy', 'renewables'],
+        'Law & Legal'        => ['law', 'legal', 'attorney', 'lawyer', 'contracts', 'regulations', 'compliance', 'court', 'justice'],
+        'Architecture'       => ['architect', 'buildings', 'architectural', 'construction', 'structures', 'urban design'],
+        'Agriculture'        => ['farming', 'crops', 'livestock', 'agro', 'harvest', 'organic farming', 'agritech'],
+        'Logistics'          => ['supply chain', 'shipping', 'freight', 'transportation', 'delivery', 'warehouse', 'logistics'],
+        'Manufacturing'      => ['manufacturing', 'factory', 'industrial', 'production', 'machinery', 'automation', 'assembly'],
+        'Marine & Ocean'     => ['marine', 'ocean', 'sea', 'scuba', 'diving', 'maritime', 'sailing', 'coastal'],
+        'Media & Journalism' => ['journalism', 'news', 'press', 'media', 'reporting', 'podcast', 'broadcasting', 'publishing'],
+        'Military & Defense' => ['military', 'defense', 'army', 'navy', 'air force', 'security', 'weapons', 'armed forces'],
+        'Philosophy'         => ['philosophy', 'ethics', 'morality', 'logic', 'philosophical', 'thought', 'epistemology'],
+        'Psychology'         => ['psychology', 'mental health', 'cognitive', 'therapy', 'counseling', 'behavior', 'mindset'],
+        'Space'              => ['space', 'astronomy', 'nasa', 'cosmos', 'universe', 'rockets', 'planets', 'galaxies'],
     ];
 
     /**
@@ -217,8 +246,16 @@ class PhpPredictionEngine implements PredictionEngineInterface {
             ];
         }
 
+        // Title weighting: boost title terms (x3) so short drafts or long content don't drown out key topic words
+        $title = $context['title'] ?? '';
+        if (empty($title)) {
+            $lines = explode("\n", $clean_text);
+            $title = !empty($lines[0]) ? trim($lines[0]) : '';
+        }
+        $inference_text = !empty($title) ? ($title . ' ' . $title . ' ' . $title . "\n\n" . $clean_text) : $clean_text;
+
         // 1. Raw statistical inference
-        $raw = $this->predict($clean_text, 10);
+        $raw = $this->predict($inference_text, 10);
 
         // Polysemy & Contextual Disambiguation
         // A. Travel vs Corporate Governance:
@@ -317,11 +354,11 @@ class PhpPredictionEngine implements PredictionEngineInterface {
         }
 
         // Low statistical confidence threshold for OOD
-        // Sparse content (< 5 active features) requires >= 0.40 to prevent false-positive guesses.
-        // Substantial content (>= 5 active features) with leading probability (>= 0.25)
+        // Sparse content (< 5 active features) requires >= 0.35 to prevent false-positive guesses.
+        // Substantial content (>= 5 active features) with leading probability (>= 0.18)
         // is statistically significant across 42 classes (random chance = 2.4%).
         $feature_count = count($active_features);
-        $min_confidence_floor = ($feature_count >= 5) ? 0.25 : 0.40;
+        $min_confidence_floor = ($feature_count >= 5) ? 0.18 : 0.35;
 
         if ($raw_confidence < $min_confidence_floor) {
             return [
