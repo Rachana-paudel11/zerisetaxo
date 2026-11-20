@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       ZeriseTaxo
  * Description:       Suggests WordPress post categories and tags using an embedded local model, site vocabulary learning, and optional Google Gemini assistance.
- * Version:           1.1.2
+ * Version:           1.1.3
  * Requires at least: 6.0
  * Tested up to:      7.1
  * Requires PHP:      8.0
@@ -14,7 +14,7 @@
 
 defined('ABSPATH') || exit;
 
-define('ZERISETAXO_VERSION', '1.1.2');
+define('ZERISETAXO_VERSION', '1.1.3');
 define('ZERISETAXO_PATH', plugin_dir_path(__FILE__));
 define('ZERISETAXO_URL', plugin_dir_url(__FILE__));
 define('ZERISETAXO_BASENAME', plugin_basename(__FILE__));
